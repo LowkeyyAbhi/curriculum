@@ -36,9 +36,10 @@ for i in range(1, len(str1)+1):
 
 #Step 3: Traceback
 
-#Initialised two empty strings which will be filled using aligned sequences
+#Initialised two empty strings which will be filled using aligned sequences and third string to represnt vertical bar
 aligned1 = ""
 aligned_2 = ""
+aligned = ""
 
 #Since traceback step begins from bottom-most we assign ti and tj as 
 ti = len(str1) #Length of sequence 1
@@ -60,6 +61,11 @@ while ti>0 or tj>0: # Or of two condition so that both sequence reaches their en
         aligned1 = str1[ti-1]+aligned1
         aligned_2 = str2[tj-1]+aligned_2
 
+        if (str1[ti-1] == str2[tj-1]):
+            aligned = "|"+aligned
+        else:
+            aligned = " "+aligned
+
         ti = ti-1
         tj = tj-1
 
@@ -70,6 +76,7 @@ while ti>0 or tj>0: # Or of two condition so that both sequence reaches their en
         #Adds character to first sequence and gap to second
         aligned1 = str1[ti-1]+aligned1
         aligned_2 = "-"+aligned_2
+        aligned = " "+aligned
 
         ti = ti-1
 
@@ -79,6 +86,7 @@ while ti>0 or tj>0: # Or of two condition so that both sequence reaches their en
         #Adds gap to first and character to second
         aligned1 = "-"+aligned1
         aligned_2 = str2[tj-1]+aligned_2
+        aligned = " "+aligned
 
         tj = tj-1
 
@@ -90,6 +98,7 @@ print(matrix)
 
 print("\nc. Optimal Global Alignment: ")
 print(aligned1)
+print(aligned)
 print(aligned_2)
 
 #Alignment Score

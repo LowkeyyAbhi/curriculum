@@ -10,8 +10,8 @@ gap = -2 #gap penalty score as provided in assignment pdf
 matrix = np.zeros((len(str1)+1, len(str2)+1)) # Create a matrix through numpy library
 
 #Step 1: Initialisation of the matrix
-# Set first row and first column as 0
 
+# Set first row and first column as 0
 for i in range(len(str1)+1):
     matrix[i][0] = 0 #Across first column
 
@@ -34,16 +34,18 @@ for i in range(1, len(str1)+1):
 
 # Step 3: Finding starting point for Traceback step
 
-#Finding the highest score in matrix 
+#Finding the highest score in matrix and cells where they occur
 max_value = np.max(matrix)
+max_cells = np.argwhere(matrix == max_value)
 
-ti, tj = np.unravel_index(np.argmax(matrix), matrix.shape)
+ti, tj = max_cells[0] # First maximum cell for tracebcak indices
 
 #Step 4: Traceback
 
-#Initialised two empty strings which will be filled using aligned sequences
+#Initialised two empty strings which will be filled using aligned sequences and third string to represent vertical bar
 aligned1 = ""
 aligned2 = ""
+aligned = ""
 
 while ti>0 and tj>0 and matrix[ti][tj] != 0:
 
@@ -54,6 +56,11 @@ while ti>0 and tj>0 and matrix[ti][tj] != 0:
 
     # Diagonal movement
     if (matrix[ti][tj] == matrix[ti-1][tj-1]+diagonal_score):
+
+        if (str1[ti-1] == str2[tj-1]):
+            aligned = "|"+aligned
+        else:
+            aligned = " "+aligned
 
         #Adds character to both the sequences
         aligned1 = str1[ti-1]+aligned1
@@ -68,6 +75,7 @@ while ti>0 and tj>0 and matrix[ti][tj] != 0:
         #Adds character to first sequence and gap to second
         aligned1 = str1[ti-1]+aligned1
         aligned2 = "-"+aligned2
+        aligned = " "+aligned
 
         ti = ti-1
 
@@ -77,18 +85,26 @@ while ti>0 and tj>0 and matrix[ti][tj] != 0:
         #Adds gap to first and character to second sequence
         aligned1 = "-"+aligned1
         aligned2 = str2[tj-1]+aligned2
+        aligned = " "+aligned
 
         tj = tj-1
 
 
-#Printing the complete locala alignment matrix
+#Print the complete locala alignment matrix
 print("a. Complete Local Alignment matrix: \n")
 print(matrix)
 
-#Printing the optimal local alignment
-print("Optimal Local Alignment: ")
+#Print the maximum score
+print("\nb. Maximum Score: ", int(max_value))
+print("Cells where maximum occur: ", end="")
+for i in max_cells:
+    print(i, end="")
+
+#Print the optimal local alignment
+print("\n\nd. Optimal Local Alignment: ")
 print(aligned1)
+print(aligned)
 print(aligned2)
 
 #Alignment score
-print("\nb. Optimal Local Alignment Score: ", int(max_value))
+print("\ne. Optimal Local Alignment Score: ", int(max_value))
