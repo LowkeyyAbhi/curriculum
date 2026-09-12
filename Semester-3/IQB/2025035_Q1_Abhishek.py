@@ -1,96 +1,94 @@
 import numpy as np
 
-str1 = "GATTACAAGTCC"  #DNA sequence 1
-str2 = "TTACAGTCA" #DNA sequence 2 
+str1 = "GATTACAAGTCC" # DNA sequence 1
+str2 = "TTACAGTCA" #DNA sequence 2
 
-# str1 = "GCTTAGC"
-# str2 = "GCATTGC"
+match = 3 #match score as provided in assignment pdf
+mismatch = -2 #mismatch penalty as provided in assignment pdf
+gap = -2 #gap penalty score as provided in assignment pdf
 
-match = 2 #match score as provided in assignment pdf
-gap = -1 #gap penalty score as provided in assignment pdf
-mismatch = -3 #mismatch penalty as provided in assignment pdf
+matrix = np.zeros((len(str1)+1, len(str2)+1)) # Create a matrix through numpy library
 
-matrix = np.zeros((len(str1)+1, len(str2)+1))  #Create a matrix through numpy library in python
+#Step 1: Initialisation of the matrix
+# Set first row and first column as 0
 
-# print(matrix)
-
-#Step 1: Initialisation the matrix by assigning gap penalty as part of the
-# initialisaton process
-
-for i in range(len(str1)+1): 
-    matrix[i][0] = i*gap  # Across first column
+for i in range(len(str1)+1):
+    matrix[i][0] = 0 #Across first column
 
 for j in range(len(str2)+1):
-    matrix[0][j] = j*gap # Across first row
+    matrix[0][j] = 0 # Across first row
 
-#Step 2: Matrix Filling according to scoring scheme
+#Step 2: Matrix filling according to the scheme
+
 for i in range(1, len(str1)+1):
     for j in range(1, len(str2)+1):
-        if str1[i-1] == str2[j-1]: # Assigning match score if two sequence match
-            diagonal_score = match
+        #Assigning match sore if sequence matches
+        if (str1[i-1] == str2[j-1]):
+            diagonal_score = match 
         else:
-            diagonal_score = mismatch #Assigning mismatch penalty if sequences didn't match
+            diagonal_score = mismatch #Assigning mismatch penalty if sequence mismatch
 
-        matrix[i][j] = max(matrix[i-1][j-1]+diagonal_score, matrix[i][j-1]+gap, matrix[i-1][j]+gap)
-#Matrix is filled by taking the maximum of the three
+        matrix[i][j] = max(0, matrix[i-1][j-1]+diagonal_score, matrix[i][j-1]+gap, matrix[i-1][j]+gap)
 
-#Step 3: Traceback
+# Matrix filling is done by taking the maximum of these four values
+
+# Step 3: Finding starting point for Traceback step
+
+#Finding the highest score in matrix 
+max_value = np.max(matrix)
+
+ti, tj = np.unravel_index(np.argmax(matrix), matrix.shape)
+
+#Step 4: Traceback
 
 #Initialised two empty strings which will be filled using aligned sequences
 aligned1 = ""
-aligned_2 = ""
+aligned2 = ""
 
-#Since traceback step begins from bottom-most we assign ti and tj as 
-ti = len(str1) #Length of sequence 1
-tj = len(str2) #Length of sequence 2
+while ti>0 and tj>0 and matrix[ti][tj] != 0:
 
-while ti>0 or tj>0: # Or of two condition so that both sequence reaches their end
-    if ti>0 and tj>0:
+    if str1[ti-1] == str2[tj-1]:
+        diagonal_score = match #In case of match
+    else:
+        diagonal_score = mismatch #In case of mismatch
 
-        #Checking match or mismatch
-        if str1[ti-1] == str2[tj-1]:
-            diagonal_score = match
-        else:
-            diagonal_score = mismatch
-
-    #Diagonal movement
-    if (ti>0 and tj>0 and matrix[ti][tj] == matrix[ti-1][tj-1]+diagonal_score):
+    # Diagonal movement
+    if (matrix[ti][tj] == matrix[ti-1][tj-1]+diagonal_score):
 
         #Adds character to both the sequences
         aligned1 = str1[ti-1]+aligned1
-        aligned_2 = str2[tj-1]+aligned_2
+        aligned2 = str2[tj-1]+aligned2
 
         ti = ti-1
         tj = tj-1
 
-
-    #Upward movement 
-    elif (ti>0 and matrix[ti][tj] == matrix[ti-1][tj]+gap):
+    # Upward movement
+    elif matrix[ti][tj] == matrix[ti-1][tj]+gap:
 
         #Adds character to first sequence and gap to second
         aligned1 = str1[ti-1]+aligned1
-        aligned_2 = "-"+aligned_2
+        aligned2 = "-"+aligned2
 
         ti = ti-1
 
-    #Left movement
-    elif (tj>0 and matrix[ti][tj] == matrix[ti][tj-1]+gap):
+    # Left movement
+    elif matrix[ti][tj] == matrix[ti][tj-1]+gap:
 
-        #Adds gap to first and character to second
+        #Adds gap to first and character to second sequence
         aligned1 = "-"+aligned1
-        aligned_2 = str2[tj-1]+aligned_2
+        aligned2 = str2[tj-1]+aligned2
 
         tj = tj-1
 
-#Printing the complete global alignment matrix
-print("b. Complete Global Alignment matrix: \n")
+
+#Printing the complete locala alignment matrix
+print("a. Complete Local Alignment matrix: \n")
 print(matrix)
 
-#Printing the optimal alignment
-
-print("\nc. Optimal Global Alignment: ")
+#Printing the optimal local alignment
+print("Optimal Local Alignment: ")
 print(aligned1)
-print(aligned_2)
+print(aligned2)
 
-#Alignment Score
-print("\nc. Optimal Alignment Score: ", int(matrix[len(str1)][len(str2)])) #Last entry in the aligned matrix
+#Alignment score
+print("\nb. Optimal Local Alignment Score: ", int(max_value))
