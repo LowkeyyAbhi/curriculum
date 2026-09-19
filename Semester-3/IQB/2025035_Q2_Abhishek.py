@@ -1,14 +1,14 @@
 import numpy as np
 
-str1 = "GATTACAAGTCC"  #DNA sequence 1
-str2 = "TTACAGTCA" #DNA sequence 2 
+str1 = "ATGAT"  #DNA sequence 1
+str2 = "ATT" #DNA sequence 2 
 
 # str1 = "GCTTAGC"
 # str2 = "GCATTGC"
 
 match = 2 #match score as provided in assignment pdf
-gap = -1 #gap penalty score as provided in assignment pdf
-mismatch = -3 #mismatch penalty as provided in assignment pdf
+gap = -2 #gap penalty score as provided in assignment pdf
+mismatch = -1 #mismatch penalty as provided in assignment pdf
 
 matrix = np.zeros((len(str1)+1, len(str2)+1))  #Create a matrix through numpy library in python
 
